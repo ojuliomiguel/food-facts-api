@@ -1,0 +1,12 @@
+version: "3.9"
+services: 
+  food-facts-db:
+    volumes: 
+      - /var/lib/pg_food_facts/pgdata:/var/lib/postgresql/data
+    image: postgres
+    ports:
+      - '5477:5432'
+    environment:
+      POSTGRES_USER: julio
+      POSTGRES_PASSWORD: code42
+      POSTGRES_DB: food_facts

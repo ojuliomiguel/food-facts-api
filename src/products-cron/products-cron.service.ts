@@ -12,7 +12,7 @@ export class ProductsCronService {
   constructor(private readonly fileService: FileService) {}
 
 
-  @Cron('*/59 * * * * *')
+  @Cron('0 18 * * *')
   public async handleCron() {
     this.logger.debug('Starting download file');
     const fileList = await this.getFileList();
