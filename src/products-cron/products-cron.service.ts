@@ -1,19 +1,32 @@
 import { Injectable, Logger } from "@nestjs/common";
 import axios from 'axios';
 import { Cron } from "@nestjs/schedule";
+import { FileService } from "./file.service";
 
 @Injectable()
 export class ProductsCronService {
 
   private readonly logger = new Logger(ProductsCronService.name);
 
+  
+  constructor(private readonly fileService: FileService) {}
+
 
   @Cron('*/59 * * * * *')
   public async handleCron() {
     this.logger.debug('Starting download file');
+    const fileList = await this.getFileList();
     const file = await this.downloadProductsFile();
+    this.fileService.save(file, 'products_01.json.gz');
     return file;
 
+  }
+
+  private async getFileList(): Promise<string[]> {
+     const res = 
+      await axios.get('https://challenges.coode.sh/food/data/json/index.txt');
+    const fileList = res.data.split('\n').filter(f => f !== '');
+     return fileList;
   }
 
 
