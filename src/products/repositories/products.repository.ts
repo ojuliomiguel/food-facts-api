@@ -1,23 +1,28 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
-import { Product } from '../entities/product.entity'
+import { Product } from '../entities/product.entity';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProductsRepository {
 
   constructor(
     @InjectRepository(Product)
-    private fileRepository: Repository<Product>
+    private productsRepository: Repository<Product>
   ) { }
 
-  // public async findAll() {
-  //   this.fileRepository
-  //     .cre
-  // }
+  public async findAll(options: IPaginationOptions): Promise<Pagination<Product>> {
+    const queryBuilder = this.productsRepository.createQueryBuilder();
+    return paginate<Product>(queryBuilder, options);
+  }
 
   public async bulk(products: any[]) {
-    this.fileRepository
+    this.productsRepository
       .createQueryBuilder()
       .insert()
       .values(products)

@@ -3,6 +3,11 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ProductsRepository } from './repositories/products.repository';
+import {
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
+import { Product } from './entities/product.entity';
+
 
 
 @Injectable()
@@ -10,22 +15,17 @@ export class ProductsService {
 
   private readonly logger = new Logger(ProductsService.name);
 
-  
   constructor(private productsRepository: ProductsRepository) {}
-
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
-  }
-
+ 
   @OnEvent('products-to-import')
    bulkInsert(producst: any[]) {
     this.logger.log('BulkInsert event trigged');
-
     this.productsRepository.bulk(producst);
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll(options: IPaginationOptions) {
+    const products = await this.productsRepository.findAll(options);
+    return products;
   }
 
   findOne(id: number) {
