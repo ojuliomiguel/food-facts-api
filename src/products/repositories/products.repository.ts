@@ -16,6 +16,11 @@ export class ProductsRepository {
     private productsRepository: Repository<Product>
   ) { }
 
+  public async findOne(id: string): Promise<Product | null> {
+    const product = await this.productsRepository.findOne({where: {id: id}})
+    return product;    
+  }
+
   public async findAll(options: IPaginationOptions): Promise<Pagination<Product>> {
     const queryBuilder = this.productsRepository.createQueryBuilder();
     return paginate<Product>(queryBuilder, options);
