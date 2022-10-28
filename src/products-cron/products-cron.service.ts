@@ -5,13 +5,17 @@ import { FileService } from "../file/file.service";
 import { FolderName } from "src/common/enums/folder-name.enum";
 import { createReadStream } from 'fs';
 import readline = require('readline');
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ProductsCronService {
 
   private readonly logger = new Logger(ProductsCronService.name);
 
-  constructor(private readonly fileService: FileService) { }
+  constructor(
+    private readonly fileService: FileService,
+    private eventEmitter: EventEmitter2
+  ) { }
 
   @Cron('*/30 * * * * *')
   public async handleCron() {
@@ -34,7 +38,11 @@ export class ProductsCronService {
     await this.fileService.save(file, fileToImport, FolderName.PRODUCTS);
 
     const products = await this.getProductsFromJsonFile(fileName);
-    return products;
+    
+    this.eventEmitter.emit(
+      'products-to-import',
+      products
+    );
   }
 
   public async getNotImportedFiles(): Promise<string[]> {
@@ -97,7 +105,7 @@ export class ProductsCronService {
 
   private async getProductsFromJsonFile(fileName: string, limit = 100) {
     const filePath =
-      `${this.fileService.getPath(FolderName.PRODUCTS)}/${'products_08.json'}`
+      `${this.fileService.getPath(FolderName.PRODUCTS)}/${fileName}`
     const readStream = createReadStream(filePath, { encoding: "utf8" });
     
     const file = readline.createInterface({
@@ -115,13 +123,15 @@ export class ProductsCronService {
       products.push(JSON.parse(line))
     }
 
+    this.logger.log('Mapping producsts from json file');
+
     products = products.map(p => {
       return {
-        code: p.code,
+        code: !isNaN(Number(p.code)) ? Number(p.code): 0,
         url: p.url,
         creator: p.creator,
         productName: p.product_name,
-        quantity: p.quantity,
+        quantity: !isNaN(Number(p.quantity)) ? Number(p.quantity): 0,
         brands: p.brands,
         categories: p.categories,
         labels: p.labels,
@@ -130,14 +140,19 @@ export class ProductsCronService {
         stores: p.stores,
         ingredientsText: p.ingredients_text,
         traces: p.traces,
-        servingSize: p.serving_size,
-        servingQuantity: p.serving_quantity,
-        nutriscoreScore: p.nutriscore_score,
-        nutriscoreGrade: p.nutriscore_grade,
+        servingSize: !isNaN(Number(p.serving_size)) ? Number(p.serving_size) : 0,
+        servingQuantity: 
+          !isNaN(Number(p.serving_quantity)) ?  Number(p.serving_quantity) : 0,
+        nutriscoreScore: 
+          !isNaN(Number(p.nutriscore_score)) ? Number(p.nutriscore_score) : 0,
+        nutriscoreGrade: 
+          !isNaN(Number(p.nutriscore_grade)) ? Number(p.nutriscore_grade) : 0,
         mainCategory: p.main_category,
         imageUrl: p.image_url
       }
     })
+
+    this.logger.log(' Finished Mapping producsts from json file');
 
     return products;
   }

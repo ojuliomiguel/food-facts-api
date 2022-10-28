@@ -6,11 +6,13 @@ import { ProductsModule } from './products/products.module';
 import { ProductsCronModule } from './products-cron/products-cron.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dbConfig } from './config/database.config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(dbConfig),
+    EventEmitterModule.forRoot(),
     ProductsModule,
     ProductsCronModule
   ],
