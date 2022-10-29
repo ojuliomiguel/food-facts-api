@@ -1,11 +1,12 @@
 import { Injectable, Logger } from "@nestjs/common";
 import axios from 'axios';
-import { Cron } from "@nestjs/schedule";
+import { Cron, SchedulerRegistry } from "@nestjs/schedule";
 import { FileService } from "../file/file.service";
 import { FolderName } from "src/common/enums/folder-name.enum";
 import { createReadStream } from 'fs';
 import readline = require('readline');
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CronJob } from "cron";
 
 @Injectable()
 export class ProductsCronService {
@@ -13,14 +14,18 @@ export class ProductsCronService {
   private readonly logger = new Logger(ProductsCronService.name);
 
   constructor(
+    private schedulerRegistry: SchedulerRegistry,
     private readonly fileService: FileService,
     private eventEmitter: EventEmitter2
   ) { }
 
-  @Cron('*/30 * * * * *')
-  public async handleCron() {
-    this.logger.log('Starting download file');
-    await this.manageProductsFile();
+  onModuleInit() {
+    const job = new CronJob(process.env.CRON_EXPRESSION, () => {
+      this.manageProductsFile()
+    });
+  
+    this.schedulerRegistry.addCronJob('import products', job);
+    job.start();
   }
 
   private async manageProductsFile() {
@@ -56,7 +61,7 @@ export class ProductsCronService {
 
   private async requestFilesListFromServer(): Promise<string[]> {
     const res =
-      await axios.get('https://challenges.coode.sh/food/data/json/index.txt');
+      await axios.get(`${process.env.BASE_URL}/food/data/json/index.txt`);
     const fileList = res.data.split('\n').filter(f => f !== '');
     return fileList;
   }
@@ -92,7 +97,7 @@ export class ProductsCronService {
 
   private buildProductsHttpRequest(fileName: string): any {
     const baseUrl =
-      `https://challenges.coode.sh/food/data/json/${fileName}`;
+      `${process.env.BASE_URL}/food/data/json/${fileName}`;
 
     return {
       url: baseUrl,
