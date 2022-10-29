@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { 
+  AfterSoftRemove,
+  BeforeSoftRemove, 
+  Column, 
+  CreateDateColumn, 
+  DeleteDateColumn, 
+  Entity, 
+  PrimaryGeneratedColumn 
+} from "typeorm";
 import { ProductStatus } from "../enums/product-status.enum";
 
 @Entity('products')
@@ -74,4 +82,8 @@ export class Product {
 
   @Column({type: "varchar", name: 'image_url'})
   imageUrl: string;
+
+  @DeleteDateColumn({name: 'deleted_at'})
+  deletedAt: Date;
+
 }

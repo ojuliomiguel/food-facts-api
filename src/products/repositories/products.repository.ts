@@ -7,6 +7,7 @@ import {
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
+import { ProductStatus } from "../enums/product-status.enum";
 
 @Injectable()
 export class ProductsRepository {
@@ -17,13 +18,21 @@ export class ProductsRepository {
   ) { }
 
   public async findOne(id: string): Promise<Product | null> {
-    const product = await this.productsRepository.findOne({where: {id: id}})
-    return product;    
+    const product = await this.productsRepository.findOne({ where: { id: id } })
+    return product;
   }
 
   public async findAll(options: IPaginationOptions): Promise<Pagination<Product>> {
     const queryBuilder = this.productsRepository.createQueryBuilder();
     return paginate<Product>(queryBuilder, options);
+  }
+
+  public async remove(id: string) {
+    const product = await this.productsRepository.findOne({where: {id: id}})
+    product.status = ProductStatus.TRASH
+    await this.productsRepository.save(product);
+    return await this.productsRepository.softRemove(product);
+
   }
 
   public async bulk(products: any[]) {
