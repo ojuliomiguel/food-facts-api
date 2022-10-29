@@ -17,6 +17,18 @@ export class ProductsRepository {
     private productsRepository: Repository<Product>
   ) { }
 
+  public async update(id: string, product: any) {
+    return this.productsRepository.createQueryBuilder()
+      .update({
+        ...product,
+      })
+      .where({
+        id: id,
+      })
+      .returning('*')
+      .execute()
+  }
+
   public async findOne(id: string): Promise<Product | null> {
     const product = await this.productsRepository.findOne({ where: { id: id } })
     return product;

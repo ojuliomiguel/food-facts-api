@@ -32,8 +32,8 @@ export class ProductsService {
     return this.productsRepository.findOne(id);
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  update(id: string, updateProductDto: UpdateProductDto) {
+    return this.productsRepository.update(id, updateProductDto);
   }
 
   remove(id: string) {
