@@ -4,6 +4,8 @@
 
 **Esta aplicação realiza download de um arquivo (contendo dados a respeito de alimentos) a cada x período de tempo e disponibiliza os dados através de endpoints**.
 
+## [Requisitos](REQUISITOS.md)
+
 ## Tech
 
 - node.js - javascript runtime
@@ -148,6 +150,6 @@ Atualizar um produto
 	
 	"url": "www.google.com",
   "creator": "julio",
-  ...
+  "...": "..."
 } 
 ```
