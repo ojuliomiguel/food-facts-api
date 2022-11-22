@@ -126,8 +126,8 @@ Listar todos os produto
 
 ```json
 {
-"items": [...],  
-"meta": {
+	"items": [...],  
+	"meta": {
 		"totalItems": 90,
 		"itemCount": 10,
 		"itemsPerPage": 10,
