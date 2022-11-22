@@ -2,14 +2,17 @@
 
 ## Descrição
 
-**Esta aplicação realiza download de um arquivo (contendo dados a respeito de alimentos) a cada x período de tempo e disponibiliza os dados através de endpoints**.
+**Esta aplicação realiza download de um arquivo (contendo dados a respeito de
+alimentos) a cada x período de tempo e disponibiliza os dados através de
+endpoints**.
 
 ## [Requisitos](REQUISITOS.md)
 
 ## Tech
 
 - node.js - javascript runtime
-- [nestjs](https://nestjs.com/) - Construção de aplicativos eficientes, confiáveis e escaláveis do lado do servidor
+- [nestjs](https://nestjs.com/) - Construção de aplicativos eficientes,
+  confiáveis e escaláveis do lado do servidor
 - docker
 
 ## Instalação
@@ -18,7 +21,6 @@
 - docker
 
 > Recomendo utilizar yarn
-
 
 Modificar o arquivo `docker-compose.yml` com os dados de sua preferencia e subir
 o banco com o comando:
@@ -52,7 +54,6 @@ DB_USER=julio
 DB_NAME=food_facts
 DB_PWD=code42
 CRON_EXPRESSION=*/10 * * * * *
-
 ```
 
 ```bash
@@ -76,7 +77,7 @@ $ npm run start:prod
 
 Endpoint base `http://localhost:3007`
 
-Status da aplicação 
+Status da aplicação
 
 ```json
 {
@@ -91,31 +92,31 @@ Localizar produto por id
 
 ```json
 {
-	"id": "d8fb5da4-06c2-47c6-80d9-99c42c9b8fb5",
-	"code": "815361016313",
-	"status": "published",
-	"importedT": "2022-10-28T19:56:14.910Z",
-	"url": "www.google.com",
-	"creator": "kiliweb",
-	"createdT": "2022-10-28T19:56:14.910Z",
-	"lastModifiedT": "2022-10-28T19:56:14.910Z",
-	"productName": "Prout",
-	"quantity": "0",
-	"brands": "",
-	"categories": "",
-	"labels": "",
-	"cities": "",
-	"purchasePlaces": "",
-	"stores": "",
-	"ingredientsText": "",
-	"traces": "",
-	"servingSize": "0",
-	"servingQuantity": 0,
-	"nutriscoreScore": 0,
-	"nutriscoreGrade": "0",
-	"mainCategory": "",
-	"imageUrl": "https://static.openfoodfacts.org/images/products/081/536/101/6313/front_fr.3.400.jpg",
-	"deletedAt": null
+  "id": "d8fb5da4-06c2-47c6-80d9-99c42c9b8fb5",
+  "code": "815361016313",
+  "status": "published",
+  "importedT": "2022-10-28T19:56:14.910Z",
+  "url": "www.google.com",
+  "creator": "kiliweb",
+  "createdT": "2022-10-28T19:56:14.910Z",
+  "lastModifiedT": "2022-10-28T19:56:14.910Z",
+  "productName": "Prout",
+  "quantity": "0",
+  "brands": "",
+  "categories": "",
+  "labels": "",
+  "cities": "",
+  "purchasePlaces": "",
+  "stores": "",
+  "ingredientsText": "",
+  "traces": "",
+  "servingSize": "0",
+  "servingQuantity": 0,
+  "nutriscoreScore": 0,
+  "nutriscoreGrade": "0",
+  "mainCategory": "",
+  "imageUrl": "https://static.openfoodfacts.org/images/products/081/536/101/6313/front_fr.3.400.jpg",
+  "deletedAt": null
 }
 ```
 
@@ -144,12 +145,10 @@ Deletar um produto
 
 Atualizar um produto
 
-
 ```json
 {
-	
-	"url": "www.google.com",
+  "url": "www.google.com",
   "creator": "julio",
   "...": "..."
-} 
+}
 ```
