@@ -1,0 +1,46 @@
+sequenceDiagram
+    participant Cliente as Cliente Web/App
+    participant API as REST API
+    participant BD as Banco de Dados
+    participant CRON as Sistema CRON
+    participant OFD as Open Food Facts
+
+    Note over Cliente, OFD: Diagrama de Interação da Aplicação
+
+    Cliente->>+API: GET / (Detalhes da API)
+    API->>+BD: Verifica conexão e status
+    BD-->>-API: Status da conexão
+    API-->>-Cliente: Detalhes da API
+
+    Cliente->>+API: PUT /products/:code (Atualizar produto)
+    API->>+BD: Atualiza produto
+    BD-->>-API: Confirmação da atualização
+    API-->>-Cliente: Status da atualização
+
+    Cliente->>+API: DELETE /products/:code (Mudar status para trash)
+    API->>+BD: Atualiza status do produto
+    BD-->>-API: Confirmação da mudança
+    API-->>-Cliente: Status da operação
+
+    Cliente->>+API: GET /products/:code (Detalhes do produto)
+    API->>+BD: Busca detalhes do produto
+    BD-->>-API: Detalhes do produto
+    API-->>-Cliente: Detalhes do produto
+
+    Cliente->>+API: GET /products (Lista de produtos)
+    API->>+BD: Busca lista de produtos com paginação
+    BD-->>-API: Lista de produtos
+    API-->>-Cliente: Lista de produtos
+
+    loop Importação Diária
+        CRON->>+API: Inicia processo de importação
+        API->>+OFD: Acessa lista de arquivos
+        OFD-->>-API: Lista de arquivos
+        loop Para cada arquivo (limitado a 100 produtos)
+            API->>OFD: Baixa arquivo
+            OFD-->>API: Dados do arquivo
+            API->>+BD: Importa produtos com 'imported_t' e 'status'
+        end
+        BD-->>-API: Confirmação da importação
+        API-->>-CRON: Importação concluída
+    end
